@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: helpsla
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /login.html
+    envVars:
+      - key: GOOGLE_CLOUD_PROJECT
+        sync: false
+      - key: FIREBASE_SERVICE_ACCOUNT_JSON
+        sync: false
+      - key: HELPSLA_DEMO_PASSWORD
+        sync: false

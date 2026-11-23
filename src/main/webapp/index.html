@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel | HelpSLA</title>
+  <link rel="stylesheet" href="css/app.css">
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark">H</span><span>Help<span class="brand-light">SLA</span></span></a>
+    <div class="topbar-right"><span id="user-name" class="user-name"></span><span id="user-role" class="role-tag"></span><button id="logout" class="button ghost">Sair</button></div>
+  </header>
+  <main class="layout">
+    <aside class="sidebar">
+      <p class="eyebrow">MENU</p>
+      <button class="nav-item active" data-view="dashboard">Visão geral</button>
+      <button class="nav-item" data-view="tickets">Chamados</button>
+      <button class="nav-item" data-view="notifications">Notificações</button>
+      <button class="nav-item requester-only" data-view="new-ticket">Abrir chamado</button>
+      <button class="nav-item admin-only" data-view="settings">Configurações</button>
+      <div class="sidebar-foot">MVP · Suporte de TI</div>
+    </aside>
+    <section class="content">
+      <section id="view-dashboard" class="view">
+        <div class="page-heading"><div><p class="eyebrow">RESUMO</p><h1 id="welcome-title">Olá!</h1><p class="muted">Acompanhe as solicitações e os prazos de atendimento.</p></div><button class="button primary requester-only" data-view="new-ticket">+ Novo chamado</button></div>
+        <div id="metric-grid" class="metric-grid">
+          <article class="metric-card"><span>Em aberto</span><strong id="metric-open">—</strong><small>Chamados em andamento</small></article>
+          <article class="metric-card"><span>Resolvidos</span><strong id="metric-done">—</strong><small>Prontos para confirmação</small></article>
+          <article class="metric-card warning-card"><span>Atrasados</span><strong id="metric-late">—</strong><small>Prazo SLA ultrapassado</small></article>
+        </div>
+        <div class="section-heading"><div><h2>Chamados recentes</h2><p class="muted">Atualizados conforme o andamento do atendimento.</p></div><button class="button secondary" data-view="tickets">Ver todos</button></div>
+        <div id="recent-tickets" class="ticket-list"></div>
+      </section>
+
+      <section id="view-tickets" class="view hidden">
+        <div class="page-heading"><div><p class="eyebrow">ACOMPANHAMENTO</p><h1>Chamados</h1><p class="muted">Veja prioridade, status e prazo de SLA.</p></div><button class="button primary requester-only" data-view="new-ticket">+ Novo chamado</button></div>
+        <div id="ticket-list" class="ticket-list"></div>
+      </section>
+
+      <section id="view-notifications" class="view hidden">
+        <div class="page-heading"><div><p class="eyebrow">AVISOS</p><h1>Notificações</h1><p class="muted">Acompanhe as atualizações dos seus chamados e escolha quais avisos receber.</p></div></div>
+        <form id="notification-preferences" class="form-card stack">
+          <h2>Preferências de avisos</h2>
+          <div id="notification-options" class="notification-options"></div>
+          <button class="button primary" type="submit">Salvar preferências</button>
+          <p id="notification-preferences-message" class="form-message" role="status"></p>
+        </form>
+        <div class="section-heading"><div><h2>Recebidas</h2><p class="muted">Os avisos são atualizados ao abrir esta tela.</p></div></div>
+        <div id="notification-list" class="ticket-list"></div>
+      </section>
+
+      <section id="view-new-ticket" class="view hidden">
+        <div class="page-heading"><div><p class="eyebrow">NOVA SOLICITAÇÃO</p><h1>Abrir chamado</h1><p class="muted">Descreva o problema. O prazo será calculado automaticamente pelo SLA.</p></div></div>
+        <form id="ticket-form" class="form-card stack">
+          <label for="ticket-title">Título</label><input id="ticket-title" required minlength="5" maxlength="160" placeholder="Ex.: Não consigo acessar o sistema">
+          <label for="ticket-description">Descrição do problema</label><textarea id="ticket-description" rows="5" required minlength="10" placeholder="Conte o que aconteceu e quando começou..."></textarea>
+          <div class="form-row"><div class="stack"><label for="ticket-category">Categoria</label><select id="ticket-category" required></select></div><div class="stack"><label for="ticket-priority">Urgência</label><select id="ticket-priority" required><option value="BAIXA">Baixa · até 5 dias</option><option value="MEDIA">Média · até 24 horas</option><option value="ALTA">Alta · até 6 horas</option><option value="CRITICA">Crítica · até 30 minutos</option></select></div></div>
+          <p class="hint">O prazo é contado em horas corridas no MVP.</p>
+          <div class="form-actions"><button class="button secondary" type="button" data-view="tickets">Cancelar</button><button class="button primary" type="submit">Enviar chamado</button></div>
+          <p id="ticket-message" class="form-message" role="status"></p>
+        </form>
+      </section>
+
+      <section id="view-settings" class="view hidden">
+        <div class="page-heading"><div><p class="eyebrow">ADMINISTRAÇÃO</p><h1>Configurações</h1><p class="muted">Gerencie as categorias e os prazos de SLA de TI.</p></div></div>
+        <div class="settings-grid">
+          <form id="sla-form" class="form-card stack"><h2>Regra de SLA</h2><label for="sla-priority">Prioridade</label><select id="sla-priority"><option value="BAIXA">Baixa</option><option value="MEDIA">Média</option><option value="ALTA">Alta</option><option value="CRITICA">Crítica</option></select><label for="sla-accept-minutes">Prazo para o técnico aceitar (minutos)</label><input id="sla-accept-minutes" type="number" min="1" max="525600" required><label for="sla-minutes">Prazo para resolver após aceitar (minutos)</label><input id="sla-minutes" type="number" min="1" max="525600" required><button class="button primary" type="submit">Salvar regra</button><p id="sla-message" class="form-message" role="status"></p></form>
+          <form id="category-form" class="form-card stack"><h2>Nova categoria</h2><label for="category-name">Nome</label><input id="category-name" required minlength="3" maxlength="100" placeholder="Ex.: Acesso e senhas"><label for="category-description">Descrição</label><textarea id="category-description" rows="3"></textarea><button class="button primary" type="submit">Adicionar categoria</button><p id="category-message" class="form-message" role="status"></p></form>
+        </div>
+        <div class="section-heading"><h2>Regras cadastradas</h2></div><div id="sla-list" class="ticket-list"></div>
+      </section>
+    </section>
+  </main>
+  <dialog id="ticket-dialog" class="ticket-dialog"><form method="dialog"><button class="dialog-close" aria-label="Fechar">×</button></form><div id="ticket-detail"></div></dialog>
+  <div id="toast" class="toast" role="status"></div>
+</body>
+</html>

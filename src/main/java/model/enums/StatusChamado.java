@@ -1,0 +1,6 @@
+package model.enums;
+
+public enum StatusChamado {
+    ABERTO, EM_TRIAGEM, EM_ATENDIMENTO, AGUARDANDO_SOLICITANTE,
+    RESOLVIDO, ENCERRADO, CANCELADO
+}
